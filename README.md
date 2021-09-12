@@ -10,7 +10,7 @@
 * 4:20: researched various mapping tools including mapbox and leaflet
 * 6:40: researched various API's that contain covid data
 * 8:30: researched methods to have multiple variables in a react-leaflet app
-* 9:00: worked on component diagram
+* 9:00: worked on component diagram 
 
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
@@ -23,7 +23,10 @@
 * WebPack
 * CSS
 * HTML
-* Gh-Pages
+* React-Leaflet
+* React-App
+
+
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
