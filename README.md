@@ -11,6 +11,18 @@
 * 6:40: researched various API's that contain covid data
 * 8:30: researched methods to have multiple variables in a react-leaflet app
 * 9:00: worked on component diagram 
+#### Sunday, 09/19
+* 4:21 watched video serries with inttro to mapbox. Coded along.
+* 7:21 completed mapbox project and used postman to start searching for API's
+
+#### Wednesday, 09/23
+* 9:21am started learning more about leaflet and watched a video tutorial of react-leaflet
+* 2:00 completed video serties and worked on comparing react-leaflet and js leaflet
+
+#### Saturday, 09/26
+* 11:00 completed component diagram
+* 1:00pm Read tutorial on how to use a select box and explored ideas on what variables to use
+* 2:02 Discussed with dev team members the significance of using react and considered the pros and cons of using a database in my project.  Also worked on using thunk. 
 
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
