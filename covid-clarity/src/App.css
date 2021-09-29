@@ -1,11 +1,35 @@
 * {
-  margin: 0;
+  margin: 5px;
 }
 
+body {
+  background-color: #f5f6fa;
+}
 
+.app {
+  display: flex;
+  justify-content: space-evenly;
+}
 .app__header {
   display: flex; 
   align-items: center;   
   margin-bottom: 20px;
-  justify-content: space-between;
+  justify-content: space-between
+} 
+.app__left {
+  flex: .85;
 }
+.app__right {
+  color: red;
+}
+.app__stats {
+  display: flex;
+  justify-content:space-evenly
+}
+
+@media (max-width: 900px) {
+    .app {
+      flex-direction:column
+    }
+}
+

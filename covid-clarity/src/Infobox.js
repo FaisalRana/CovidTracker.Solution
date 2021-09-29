@@ -3,11 +3,11 @@ import { Card, CardContent, Typography } from '@material-ui/core'
 
 function Infobox({ title, cases, total }) {
   return (
-    <Card className="infoBox1">
+    <Card className="infoBox">
       <CardContent>
-        <Typography color="textSecondary">{title} </Typogrophy>
+        <Typography className="infoBox__title" color="textSecondary">{title} </Typography>
         <h2 className="infoBox__cases"> {cases}</h2>
-        <Typography className="infoBox" color="textSecondary">
+        <Typography className="infoBox__total" color="textSecondary">
           {total} Total 
         </Typography>
       </CardContent>
