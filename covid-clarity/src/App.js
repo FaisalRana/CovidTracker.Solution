@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
+import './Table.css'
 import {
   MenuItem,
   FormControl,
   Select,
   Card,
   CardContent,
+  Button,
 } from "@material-ui/core";
 import Infobox from './Infobox';
 import Map from './Map';
 import Table from './Table'
+import { sortHelper } from './sortHelper';
 
 
 // http://disease.sh/v3/covid-19/countries
@@ -47,13 +50,21 @@ export default function App() {
               name: country.country,
               value: country.countryInfo.iso2
             }))
-          setTableData(data);
+        
+          const sortedData = sortHelper(data)
+          setTableData(sortedData);
           setCountries(countries)
         })
     }
     getCountriesData();
     // console.log('URL---_____________________->')
   }, [])
+
+
+const onReverseButtonClick = () => {
+  const sortedData = sortHelper(tableData)
+  setTableData(sortedData);
+}
 
   const onCountryChange = async (event) => {
     // hooks are syncronous and so the code actually runs the fetch before updating the state.
@@ -119,12 +130,15 @@ export default function App() {
       </div>
       <Card className="app__right">
         <CardContent>
-          <h3>Worldwide cases:</h3>
+          <h3>Worldwide cases:</h3> 
+
+
           <p>{worldwideInfo.cases}</p>
           <br></br>
 
           <h3>Live Cases by Country</h3>
-          <Table striped bordered hover countries={tableData} />
+          <Button variant="outlined" size="small" color="primary" onClick={onReverseButtonClick}>Reverse Order</Button>
+          <Table countries={tableData} />
           <p>{countryInfo.country}</p>
           <p>{countryInfo.cases}</p>
           <p>{countryInfo.deaths}</p>
