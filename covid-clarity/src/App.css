@@ -18,13 +18,22 @@ body {
 } 
 .app__left {
   flex: .85;
+  border: red solid;
 }
 .app__right {
-  color: red;
+flex-direction:column;
+border: red solid;
 }
+
+.app__stats__top {
+  flex-direction:column;
+  border: red solid;
+  }
 .app__stats {
-  display: flex;
-  justify-content:space-evenly
+  /* justify-content:space-between; */
+  border: red solid;
+  display:flex;
+  justify-content: space-evenly;
 }
 
 @media (max-width: 900px) {
@@ -33,3 +42,13 @@ body {
     }
 }
 
+.chart {
+  height: 100%;
+  background-color: white;
+  border: red solid;
+  margin-top: 16px;
+  box-shadow: 0 0 8px -4px rgba(0,0,0,0.5);
+}
+/* div {
+  border: orange solid
+} */

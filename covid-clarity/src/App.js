@@ -13,11 +13,20 @@ import Infobox from './Infobox';
 import Map from './Map';
 import Table from './Table'
 import { sortHelper } from './sortHelper';
-
+import LineGraph from './LineGraph';
+import "leaflet/dist/leaflet.css"
+import { useMap } from 'react-leaflet';
 
 // http://disease.sh/v3/covid-19/countries
 // http://disease.sh/v3/covid-19/countries/[country code]
 // http://disease.sh/v3/covid-19/all //worldwide 
+export function ChangeMapView({ coords, zoom }) {
+  const map = useMap();
+  map.setView(coords, zoom);
+
+  return null;
+}
+
 
 export default function App() {
   const [countries, setCountries] = useState([]);
@@ -25,6 +34,10 @@ export default function App() {
   const [countryInfo, setCountryInfo] = useState({})
   const [tableData, setTableData] = useState([])
   const [worldwideInfo, setWorldwideInfo] = useState([])
+  const [mapCenter, setMapCenter] = useState({ lat: 10, lng: 100 })
+  const [mapZoom, setMapZoom] = useState([2])
+  const [mapPosition, setMapPosition] = useState({ lat: 45, lng: 10 })
+
   // const [url, setUrl] = useState('')
 
   useEffect(() => {
@@ -34,7 +47,6 @@ export default function App() {
         setCountryInfo(data)
         setWorldwideInfo(data)
       })
-    // console.log('URL---********************>')
   }, [])
 
 
@@ -50,7 +62,7 @@ export default function App() {
               name: country.country,
               value: country.countryInfo.iso2
             }))
-        
+
           const sortedData = sortHelper(data)
           setTableData(sortedData);
           setCountries(countries)
@@ -61,14 +73,16 @@ export default function App() {
   }, [])
 
 
-const onReverseButtonClick = () => {
-  const sortedData = sortHelper(tableData)
-  setTableData(sortedData);
-}
+  const onReverseButtonClick = () => {
+    const sortedData = sortHelper(tableData)
+    setTableData(sortedData);
+  }
 
   const onCountryChange = async (event) => {
     // hooks are syncronous and so the code actually runs the fetch before updating the state.
     const countryCode = event.target.value
+    const coordinates = ({ lat: 10, lng: 10 })
+    setMapCenter(coordinates)
     // setUrl(`http://disease.sh/v3/covid-19/countries/${countryCode}`);
     if (countryCode !== 'worldwide') {
       setCountry(countryCode);
@@ -78,18 +92,22 @@ const onReverseButtonClick = () => {
     } else {
       const url = 'http://disease.sh/v3/covid-19/all'
       getData(url)
+
     }
 
 
     // console.log('URL---->', url)
-    console.log('Country Info >>>', countryInfo)
   }
 
   const getData = async (url) => {
     await fetch(url)
       .then(response => response.json())
       .then(data => {
+        console.log(data)
         setCountryInfo(data)
+        setMapPosition([data.countryInfo.lat, data.countryInfo.long])
+        setMapZoom(4);
+
       })
   }
 
@@ -122,7 +140,7 @@ const onReverseButtonClick = () => {
             title="Deaths" total={countryInfo.deaths} cases={countryInfo.todayDeaths} />
         </div>
         <div className="app__map">
-          <Map />
+          <Map zoom={mapZoom} center={mapCenter} position={mapPosition} />
         </div>
 
 
@@ -130,25 +148,31 @@ const onReverseButtonClick = () => {
       </div>
       <Card className="app__right">
         <CardContent>
-          <h3>Worldwide cases:</h3> 
-
-
+        <div className="app__stats__top">
+          <h3>Worldwide cases:</h3>
           <p>{worldwideInfo.cases}</p>
           <br></br>
-
           <h3>Live Cases by Country</h3>
           <Button variant="outlined" size="small" color="primary" onClick={onReverseButtonClick}>Reverse Order</Button>
           <Table countries={tableData} />
-          <p>{countryInfo.country}</p>
-          <p>{countryInfo.cases}</p>
-          <p>{countryInfo.deaths}</p>
-
-          {/* Graph */}
+          </div>
+          {/* <p>{countryInfo.country}</p> */}
+          {/* <p>{countryInfo.cases}</p> */}
+          {/* <p>{countryInfo.deaths}</p> */}
+          <div className="app__stats_bottom">       
+          <Card className="chart">
+            <CardContent>
+              <LineGraph  />
+            </CardContent>
+          </Card>
+        </div>
         </CardContent>
-
       </Card>
 
     </div>
+
+
+
 
   )
 }
