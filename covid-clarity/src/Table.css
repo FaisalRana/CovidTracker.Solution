@@ -2,7 +2,7 @@
   margin-top: 20px;
   overflow: scroll;
   height:400px;
-  color: #6a5d5d
+  color: black
 }
 
 .table tr{
@@ -10,5 +10,5 @@
   justify-content: space-between;
 }
 .table tr:nth-of-type(odd) {
-  background-color: #f3f2f8;
+  background-color:rgb(163, 182, 202);
 } 

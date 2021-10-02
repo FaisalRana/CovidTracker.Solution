@@ -8,14 +8,17 @@ import {
   Card,
   CardContent,
   Button,
+  Paper
 } from "@material-ui/core";
 import Infobox from './Infobox';
 import Map from './Map';
 import Table from './Table'
-import { sortHelper } from './sortHelper';
+import { sortHelper } from './helper';
 import LineGraph from './LineGraph';
 import "leaflet/dist/leaflet.css"
 import { useMap } from 'react-leaflet';
+import numeral from 'numeral';
+import { orange } from '@material-ui/core/colors';
 
 // http://disease.sh/v3/covid-19/countries
 // http://disease.sh/v3/covid-19/countries/[country code]
@@ -37,6 +40,11 @@ export default function App() {
   const [mapCenter, setMapCenter] = useState({ lat: 10, lng: 100 })
   const [mapZoom, setMapZoom] = useState([2])
   const [mapPosition, setMapPosition] = useState({ lat: 45, lng: 10 })
+  const [mapCountries, setMapCountries] = useState([])
+  const [savedCountryInfo, setSavedCountryInfo] = useState([])
+  const [dataAge, setDataAge] = useState('All Time')
+
+
 
   // const [url, setUrl] = useState('')
 
@@ -66,6 +74,8 @@ export default function App() {
           const sortedData = sortHelper(data)
           setTableData(sortedData);
           setCountries(countries)
+          setMapCountries(data);
+          // console.log(data);
         })
     }
     getCountriesData();
@@ -78,17 +88,32 @@ export default function App() {
     setTableData(sortedData);
   }
 
+  const onRecentButtonClick = () => {
+    if (dataAge === 'All Time') {
+      setSavedCountryInfo(countryInfo);
+      setDataAge("24h")
+      setCountryInfo(prevState => {
+        prevState.cases = countryInfo.todayCases
+        prevState.recovered = countryInfo.todayRecovered
+        prevState.deaths = countryInfo.todayDeaths
+        return { ...prevState };
+      })
+    } else window.location.reload()
+  }
+
+
+
+
   const onCountryChange = async (event) => {
     // hooks are syncronous and so the code actually runs the fetch before updating the state.
     const countryCode = event.target.value
-    const coordinates = ({ lat: 10, lng: 10 })
-    setMapCenter(coordinates)
     // setUrl(`http://disease.sh/v3/covid-19/countries/${countryCode}`);
     if (countryCode !== 'worldwide') {
       setCountry(countryCode);
-      console.log(country);
+      // console.log(country);
       const url = `http://disease.sh/v3/covid-19/countries/${countryCode}`
       getData(url)
+      setDataAge("All Time")
     } else {
       const url = 'http://disease.sh/v3/covid-19/all'
       getData(url)
@@ -103,18 +128,24 @@ export default function App() {
     await fetch(url)
       .then(response => response.json())
       .then(data => {
-        console.log(data)
+        // console.log(countryInfo)
         setCountryInfo(data)
         setMapPosition([data.countryInfo.lat, data.countryInfo.long])
         setMapZoom(4);
-
+        setSavedCountryInfo(data)
       })
   }
 
 
 
   return (
+
+<div class="lines">
+  <div class="line"></div>
+  <div class="line"></div>
+  <div class="line"></div>
     <div className="app">
+      
       <div className="app__left">
         <div className="app__header">
           <h1>Covid-19 Clarity Project</h1>
@@ -132,40 +163,59 @@ export default function App() {
 
         </div>
         <div className="app__stats">
+
           <Infobox
             title="Coronavirus cases" total={countryInfo.cases} cases={countryInfo.todayCases} />
           <Infobox
             title="Recovered" total={countryInfo.recovered} cases={countryInfo.todayRecovered} />
           <Infobox
             title="Deaths" total={countryInfo.deaths} cases={countryInfo.todayDeaths} />
+          <Paper  onClick={onRecentButtonClick} elevation={2}
+            style={{
+              width: "150px",
+              height: "100px",
+              border: "1px solid grey",
+              backgroundColor: "slategrey",
+              borderRadius: "20px",
+              position: "relative",
+              marginTop: 10,
+              font: "400 2em/90px 'Oswald', sans-serif",
+              color: "#fbfbfb",
+              textAlign: "center",
+              // verticalAlign: "center",
+            }}>
+            <h4>{dataAge}</h4>
+          </Paper>
         </div>
         <div className="app__map">
-          <Map zoom={mapZoom} center={mapCenter} position={mapPosition} />
+          <Map countries={mapCountries} zoom={mapZoom} center={mapCenter} position={mapPosition} />
         </div>
 
 
         {/* Map */}
       </div>
       <Card className="app__right">
+
         <CardContent>
-        <div className="app__stats__top">
-          <h3>Worldwide cases:</h3>
-          <p>{worldwideInfo.cases}</p>
-          <br></br>
-          <h3>Live Cases by Country</h3>
-          <Button variant="outlined" size="small" color="primary" onClick={onReverseButtonClick}>Reverse Order</Button>
-          <Table countries={tableData} />
+          <div className="app__stats__top">
+            <h3>Total Worldwide Cases:</h3>
+
+            <p>{numeral(worldwideInfo.cases).format("0,0")}</p>
+            <br></br>
+            <h3>Live Cases by Country</h3>
+            <Button variant="outlined" size="small" color="primary" onClick={onReverseButtonClick}>Reverse Order</Button>
+            <Table countries={tableData} />
           </div>
           {/* <p>{countryInfo.country}</p> */}
           {/* <p>{countryInfo.cases}</p> */}
           {/* <p>{countryInfo.deaths}</p> */}
-          <div className="app__stats_bottom">       
-          <Card className="chart">
-            <CardContent>
-              <LineGraph  />
-            </CardContent>
-          </Card>
-        </div>
+          <div className="app__stats_bottom">
+            <Card className="chart">
+              <CardContent>
+                <LineGraph />
+              </CardContent>
+            </Card>
+          </div>
         </CardContent>
       </Card>
 
@@ -173,6 +223,6 @@ export default function App() {
 
 
 
-
+</div>
   )
 }

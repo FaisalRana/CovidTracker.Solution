@@ -1,5 +1,5 @@
 import React from 'react'
-import sortHelper from './sortHelper'
+import {sortHelper} from './helper.js'
 
 function Table({countries}) {
   return (
