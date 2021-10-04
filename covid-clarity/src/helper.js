@@ -2,16 +2,27 @@ import { Circle, Popup } from "react-leaflet"
 import numeral from "numeral"
 import React from "react"
 
-export const sortHelper = (data) => {
+export const sortHelper = (data, caseType) => {
   const dataToSort = [...data]
+// switch (caseType) {
+//   case "casesAscending":
+//     console.log("sort by ascnding cases")
+//   case "casesDescending":
+//     console.log("sort by descending cases")
+// }
+console.log(caseType)
+if (caseType === "casesAscending") {
+  dataToSort.sort((a, b) => b.cases - a.cases)
+} else if(caseType ==="casesDescending") dataToSort.sort((a, b) => a.cases - b.cases)
+else if(caseType ==="alphabeticalAscending") {
+  dataToSort.sort((a, b) => b.country.localeCompare(a.country))
+} else if(caseType === "alphabeticalDescending") {
+  dataToSort.sort((a, b) => a.country.localeCompare(b.country))
 
-if (dataToSort[0].cases > dataToSort[1].cases) {
-  dataToSort.sort((a, b) => a.cases - b.cases)
-} else  dataToSort.sort((a, b) => b.cases - a.cases)
+}
 
   return dataToSort;
 }
-
 
 const casesTypeColors = {
   cases: {
@@ -34,7 +45,7 @@ const casesTypeColors = {
 };
 
 
-export const showDataOnMap = (data, casesType = "cases") =>
+export const showDataOnMap = (data, casesType) =>
   data.map((country) => (
     <Circle
       center={[country.countryInfo.lat, country.countryInfo.long]}
@@ -49,13 +60,13 @@ export const showDataOnMap = (data, casesType = "cases") =>
           <div>{country.country}</div>
           <div>Cases: {numeral(country.cases).format("0,0")}</div>
           <div>Recovered: {numeral(country.recovered).format("0,0")}</div> 
-          <div>Recovered: {numeral(country.deaths).format("0,0")}</div> 
+          <div>Deaths: {numeral(country.deaths).format("0,0")}</div> 
           <div> <img
           src={country.countryInfo.flag}
           width="100"
           height="50"
         />
           </div>
-      </Popup>
+      </Popup>    
       </Circle>
   ))

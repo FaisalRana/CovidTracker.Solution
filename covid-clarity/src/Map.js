@@ -5,7 +5,7 @@ import "./Map.css"
 import { showDataOnMap } from './helper'
 
 
-function Map({countries, center, zoom, position}) {
+function Map({countries, center, zoom, position, caseType}) {
   return (
     <div className="map">
       <MapContainer center= {center} zoom={zoom}>
@@ -14,7 +14,7 @@ function Map({countries, center, zoom, position}) {
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
         <ChangeMapView coords={position} zoom={zoom} />
-        {showDataOnMap(countries, "cases")}
+        {showDataOnMap(countries, caseType)}
       </MapContainer>
     </div>
   );
