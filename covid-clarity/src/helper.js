@@ -6,7 +6,7 @@ export const sortHelper = (data, caseType) => {
 //   case "casesDescending":
 //     console.log("sort by descending cases")
 // }
-console.log(caseType)
+// console.log(caseType)
 if (caseType === "casesAscending") {
   dataToSort.sort((a, b) => b.cases - a.cases)
 } else if(caseType ==="casesDescending") dataToSort.sort((a, b) => a.cases - b.cases)

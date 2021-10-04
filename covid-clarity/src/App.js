@@ -19,7 +19,7 @@ import "leaflet/dist/leaflet.css"
 import { useMap } from 'react-leaflet';
 import numeral from 'numeral';
 import { orange } from '@material-ui/core/colors';
-import UnitedStates from './UnitedStates';
+// import UnitedStates from './UnitedStates';
 
 // http://disease.sh/v3/covid-19/countries
 // http://disease.sh/v3/covid-19/countries/[country code]
@@ -45,7 +45,7 @@ export default function App() {
   const [savedCountryInfo, setSavedCountryInfo] = useState([])
   const [dataAge, setDataAge] = useState('Total')
   const [mapCaseType, setMapCaseType] = useState('cases')
-  const [select, setSelect] = useState('Sort By:')
+  const [mapCounties, setMapCounties] = useState([])
 
 
 
@@ -85,15 +85,29 @@ export default function App() {
     // console.log('URL---_____________________->')
   }, [])
 
+  useEffect(() => {
+    // async code will run only the first time the page renders.. and again anytime the variable in the second parameter changes. 
+    const getCountiesData = async () => {
+      await fetch('https://disease.sh/v3/covid-19/jhucsse/counties')
+        .then(response => response.json())
+        .then(data => {
+
+          setMapCounties(data);
+        })
+    }
+    getCountiesData();
+    // console.log('URL---_____________________->')
+  }, [])
+
+
   
 const onInfoBoxClick = (event) => {
   setMapCaseType(event.target.value)
-  console.log(event.target.value)
-  console.log("hello world")
+
 }
 
   const onReverseButtonClick = (event) => {
-    setSelect(event.target.value)
+    // setSelect(event.target.value)
     const sortedData = sortHelper(tableData, event.target.value)
     setTableData(sortedData);
   }
@@ -140,7 +154,7 @@ const onInfoBoxClick = (event) => {
       .then(response => response.json())
       .then(data => {
         // console.log(countryInfo)
-        console.log(data)
+        // console.log(data)
         setCountryInfo(data)
         setMapPosition([data.countryInfo.lat, data.countryInfo.long])
         setMapZoom(4);
@@ -152,7 +166,7 @@ const onInfoBoxClick = (event) => {
       .then(response => response.json())
       .then(data => {
         // console.log(countryInfo)
-        console.log(data)
+        // console.log(data)
         setCountryInfo(data)
         setMapPosition({ lat: 45, lng: 10 })
         setMapZoom(2);
@@ -178,7 +192,7 @@ const onInfoBoxClick = (event) => {
           </div>
 
           <div className="app__map">
-            <Map caseType={mapCaseType} countries={mapCountries} zoom={mapZoom} center={mapCenter} position={mapPosition} />
+            <Map caseType={mapCaseType} counties={mapCounties} zoom={mapZoom} center={mapCenter} position={mapPosition} />
           </div>
           <div className="app__stats">
 
@@ -212,7 +226,7 @@ const onInfoBoxClick = (event) => {
             </Paper>
           </div>
           
-          <UnitedStates/>
+          {/* <UnitedStates/> */}
 
           {/* Map */}
         </div>

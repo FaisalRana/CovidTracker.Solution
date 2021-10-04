@@ -25,9 +25,11 @@ const casesTypeColors = {
 
 
 export const showDataOnMap = (data, casesType) =>
+{
+  console.log(data);
   data.map((country) => (
     <Circle
-      center={[country.countryInfo.lat, country.countryInfo.long]}
+      center={[country.coordinates.latitude, country.coordinates.longitude]}
       color={casesTypeColors[casesType].hex}
       fillColor={casesTypeColors[casesType].hex}
       fillOpacity={0.4}
@@ -35,7 +37,7 @@ export const showDataOnMap = (data, casesType) =>
         Math.sqrt(country[casesType]) * casesTypeColors[casesType].multiplier
       }
     >
-      <Popup styles={ `backgroundColor: 'grey'` }>
+      {/* <Popup styles={ `backgroundColor: 'grey'` }>
         <div className="container">
           <div><strong>{country.country}</strong></div>
           <div> <img
@@ -50,20 +52,20 @@ export const showDataOnMap = (data, casesType) =>
           <div className="deaths">Deaths: {numeral(country.deaths).format("0,0")}</div>
           </div>
           </div>
-          </Popup>    
+          </Popup>     */}
           </Circle>
   ))
-
-  export const showUSDataOnMap = (data, casesType="cases") =>
-  data.map((county) => (
-    <Circle
-      center={[county.coordinates.latitude, county.coordinates.longitude]}
-      color={casesTypeColors[casesType].hex}
-      fillColor={casesTypeColors[casesType].hex}
-      fillOpacity={0.4}
-      radius={
-        Math.sqrt(county[casesType]) * casesTypeColors[casesType].multiplier
-      }
-    >  
-      </Circle>
-  ))
+}
+  // export const showUSDataOnMap = (data, casesType="cases") =>
+  // data.map((county) => (
+  //   <Circle
+  //     center={[county.coordinates.latitude, county.coordinates.longitude]}
+  //     color={casesTypeColors[casesType].hex}
+  //     fillColor={casesTypeColors[casesType].hex}
+  //     fillOpacity={0.4}
+  //     radius={
+  //       Math.sqrt(county[casesType]) * casesTypeColors[casesType].multiplier
+  //     }
+  //   >  
+  //     </Circle>
+  // ))
