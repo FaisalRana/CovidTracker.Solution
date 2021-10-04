@@ -91,3 +91,17 @@ h1 {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   font-size: 40pt;
 }
+
+.container {
+  display:flex;
+  flex-wrap:wrap
+}
+.cases
+.recovered
+.deaths {
+  margin: 100px;
+  border: solid red;
+}
+.infoContainer {
+  margin-top: 4px;
+}
