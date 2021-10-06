@@ -264,7 +264,7 @@ export default function App() {
               style={{
                 // width: "150px",
                 // height: "150px",
-                border: "1px solid grey",
+                border: "1px solid black",
                 backgroundColor: "lightblue",
                 borderRadius: "10px",
                 // position: "relative",
@@ -314,8 +314,6 @@ export default function App() {
               <h4>{dataAge}</h4>
             </Paper> */}
           </div>
-
-          {/* <UnitedStates/> */}
 
           {/* Map */}
         </div>

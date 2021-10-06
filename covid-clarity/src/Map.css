@@ -1,8 +1,7 @@
 .map {
   height: 500px;
-  background-color: #004882;
-
-  padding: .2rem;
+  background-color: #0474BA;
+  padding: 1rem;
   border-radius: 20px;
   margin-top: 15px;
   margin-bottom: 15px;
@@ -10,6 +9,8 @@
 }
 
 .map .leaflet-container {
-  height: 96%;
-  border-radius:  15px
+  height: 97%;
+  border: solid black 4px;
+
+  /* border-radius:  15px */
 }
