@@ -15,7 +15,7 @@ function Table({ countries, onCountryChange, allCountryInfo}) {
             <tr>
               <td value={country}
                 onClick={() => onCountryChange(country)}>{country}</td>
-              <td><strong>Cases:</strong> {numeral(cases).format('0,0')}</td>
+              <td><strong></strong> {numeral(cases).format('0,0')}</td>
               <td></td>
             </tr>
         ))}

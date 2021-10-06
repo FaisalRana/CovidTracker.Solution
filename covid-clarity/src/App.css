@@ -22,12 +22,14 @@
   justify-content: space-evenly;
 }
 .app__right {
-width: 100%
+width: 100%;
+margin-top: 100px
 }
 .MuiCard-root {
   border-radius: 20px;
   color:red;
   border: solid black 2px;
+  justify-content: space-evenly;
 }
 /* class="MuiPaper-root MuiCard-root app__right MuiPaper-elevation1 MuiPaper-rounded" */
 .app__stats {
@@ -40,8 +42,6 @@ width: 100%
   border-radius: 20px;
   flex-wrap: wrap;
   /* justify-content: space-evenly; */
-  
-
 }
 
 @media (max-width:1100px) {
@@ -76,7 +76,7 @@ h1 {
 
 
 body {
-  margin: 100;
+  margin: 20px;
   padding: 10px; 
   background-color: #0474BA;
 }

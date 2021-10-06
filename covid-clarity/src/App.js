@@ -99,8 +99,8 @@ export default function App() {
       .then(response => response.json())
       .then(data => {
         setVaccineInfo(data)
-        console.log("vaccineInfo", ...Object.values(data))
-        console.log("vaccineInfo Detail", data.filter(element => element.country === "Afghanistan"))
+        console.log("vaccineInfo", data)
+        // console.log("vaccineInfo Detail", .filter(element => element.country === "Afghanistan"))
       })
   }, [])
 
@@ -170,10 +170,10 @@ export default function App() {
 
   const onDateAgeToggle = () => {
     if (dataAge === 'Total') {
-      setDataAge("Recent")
+      setDataAge("Last 24h")
       setCountryInfo(prevState => {
         prevState.cases = countryInfo.todayCases
-        prevState.recovered = countryInfo.todayRecovered
+        prevState.recovered = countryVaccineInfo
         prevState.deaths = countryInfo.todayDeaths
         return { ...prevState };
       })
@@ -268,7 +268,7 @@ export default function App() {
                 backgroundColor: "lightblue",
                 borderRadius: "10px",
                 // position: "relative",
-                // marginTop: 10,
+                // margintop: 10,
                 // font: "400 2em/90px 'Courier', sans-serif",
                 // color: "#fbfbfb",
                 borderAlign: "center",
@@ -294,16 +294,7 @@ export default function App() {
             <div className="app__stats_bottom">
 
             </div>
-            <div>
-              <FormGroup>
-                <FormControlLabel control={<Switch onChange={onDateAgeToggle} defaultChecked color="success" size="large" />} label={dataAge} />
-              </FormGroup>
-              <div class="switch-button">
-                <input class="switch-button-checkbox" type="checkbox"></input>
-                <label class="switch-button-label" for=""><span class="switch-button-label-span">Photo</span></label>
-              </div>
 
-            </div>
             {/* <Paper onClick={onDateAgeToggle} elevation={2}
 
               style={{
@@ -313,7 +304,7 @@ export default function App() {
                 backgroundColor: "orange",
                 borderRadius: "20px",
                 position: "relative",
-                marginTop: 10,
+                margintop: 10,
                 font: "400 2em/90px 'Courier', sans-serif",
                 color: "#fbfbfb",
                 textAlign: "center",
@@ -328,7 +319,7 @@ export default function App() {
 
           {/* Map */}
         </div>
-        <Paper style={{ backgroundColor: "smokeWhite", height: "36em" }} className="app__right">
+        <Paper style={{ backgroundColor: "smokeWhite", height: "41em" }} className="app__right">
           <div className="app__stats__top">
             <br></br>
             <Table onCountryChange={onCountryChange} allCountryInfo={countryInfo} countries={tableData} />
@@ -345,8 +336,9 @@ export default function App() {
               </Select>
             </FormControl>
             <Button className="global" onClick={() => onCountryChange("Worldwide")}> <p>View Worldwide Data</p></Button>
-            <FormGroup>
-              <FormControlLabel control={<Switch onChange={onTableToggle} defaultChecked color="success" size="large" />} label="US/World" />
+            <FormGroup className="switch">
+              <FormControlLabel control={<Switch onChange={onTableToggle}  color="success" size="large" />} label="US/World" />
+              <FormControlLabel control={<Switch onChange={onDateAgeToggle}  color="success" size="large" />} label={dataAge} />
             </FormGroup>
           </div>
           {/* <p>{countryInfo.country}</p> */}

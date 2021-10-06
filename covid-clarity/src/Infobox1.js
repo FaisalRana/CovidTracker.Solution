@@ -24,7 +24,7 @@ export function Infobox1({ title, cases, total }) {
       // cursor: "pointer",
     }} className="infoBox">
       <CardContent>
-        <Typography className="infoBox__title" color="textPrimary"><underlined>{title}</underlined> </Typography>
+        <Typography className="infoBox__title" color="textPrimary"><i>{title}</i> </Typography>
         <h2 className="infoBox__cases"> {numeral(total).format("0,0")}</h2>
       </CardContent>
     </Card>

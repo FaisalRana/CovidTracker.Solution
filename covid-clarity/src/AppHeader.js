@@ -28,9 +28,11 @@ export default function ButtonAppBar({currentCountry}) {
   return (
     <React.Fragment>
       <AppBar
-        position="sticky"
-        marginTop="30px"
-        style={{ borderRadius: "40px", backgroundColor: "#ef8d65", color: "black" }}
+        position="fixed"
+        margintop="30px"
+        style={{ 
+          // borderRadius: "40px",
+           backgroundColor: "#ffb347", color: "black" }}
       >
         <Toolbar>
             {/* <MenuIcon /> */}
