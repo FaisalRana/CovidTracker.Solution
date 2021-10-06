@@ -13,7 +13,8 @@ import {
   Switch,
   FormControlLabel,
 } from "@material-ui/core";
-import Infobox from './Infobox';
+import { Infobox } from './Infobox';
+import Infobox1 from './Infobox1';
 import Map from './Map';
 import Table from './Table'
 import { sortHelper } from './helper';
@@ -24,7 +25,7 @@ import numeral from 'numeral';
 import { orange } from '@material-ui/core/colors';
 // import UnitedStates from './UnitedStates';
 import AppHeader from './AppHeader'
-import {getCoordinates, stateToCoordinates}  from './coordinates'
+import { getCoordinates, stateToCoordinates } from './coordinates'
 import PieChart from './PieChart';
 // http://disease.sh/v3/covid-19/countries
 // http://disease.sh/v3/covid-19/countries/[country code]
@@ -44,7 +45,7 @@ export default function App() {
   const [country, setCountry] = useState('Worldwide')
   const [countryInfo, setCountryInfo] = useState({})
   const [tableData, setTableData] = useState([])
-  const [worldwideInfo, setWorldwideInfo] = useState([])
+  const [vaccineInfo, setVaccineInfo] = useState([])
   const [mapCenter, setMapCenter] = useState({ lat: 10, lng: 100 })
   const [mapZoom, setMapZoom] = useState([2])
   const [mapPosition, setMapPosition] = useState({ lat: 45, lng: 10 })
@@ -55,6 +56,8 @@ export default function App() {
   const [statesInfo, setStatesInfo] = useState([])
   const [countriesData, setCountriesData] = useState([])
   const [toggleMap, setToggleMap] = useState("World")
+  const [countryVaccineInfo, setCountryVaccineInfo] = useState(22930000)
+
 
   const pieChartData = {
     labels: ['Cases', 'Population'],
@@ -62,9 +65,9 @@ export default function App() {
       {
         label: 'Rainfall',
         backgroundColor: [
-          '#B21F00',
+          // '#B21F00',
           '#C9DE00',
-          '#2FDE00',
+          // '#2FDE00',
           '#00A6B4',
           '#6800B4'
         ],
@@ -86,13 +89,24 @@ export default function App() {
       .then(response => response.json())
       .then(data => {
         setCountryInfo(data)
-        setWorldwideInfo(data)
-        console.log(stateToCoordinates("Washington"))
+        // setWorldwideInfo(data)
+        console.log(data)
+      })
+  }, [])
+
+  useEffect(() => {
+    fetch('https://disease.sh/v3/covid-19/vaccine/coverage/countries?lastdays=1&fullData=false')
+      .then(response => response.json())
+      .then(data => {
+        setVaccineInfo(data)
+        console.log("vaccineInfo", ...Object.values(data))
+        console.log("vaccineInfo Detail", data.filter(element => element.country === "Afghanistan"))
       })
   }, [])
 
 
-// worlwide by countries with coordinates
+
+  // worlwide by countries with coordinates
   useEffect(() => {
     // async code will run only the first time the page renders.. and again anytime the variable in the second parameter changes. 
     const getCountriesData = async () => {
@@ -134,9 +148,9 @@ export default function App() {
             }))
           const newState = statesFormatted.filter(element => element.coordinates !== undefined)
           setStatesInfo(newState);
-          console.log(newState)
+          // console.log(newState)
         })
-        
+
     }
     getStatesData();
   }, [])
@@ -163,7 +177,7 @@ export default function App() {
         prevState.deaths = countryInfo.todayDeaths
         return { ...prevState };
       })
-      
+
     } else {
       onCountryChange(country)
       setDataAge("Total")
@@ -172,29 +186,38 @@ export default function App() {
 
 
   const onTableToggle = () => {
-    if(tableData !== statesInfo) {
-    setTableData(statesInfo)
-    setToggleMap("US")
-    console.log(toggleMap)
+    if (tableData !== statesInfo) {
+      setTableData(statesInfo)
+      setToggleMap("US")
     }
-    else { setTableData(countriesData)
-    setToggleMap("World")
-    console.log(toggleMap)
+    else {
+      setTableData(countriesData)
+      setToggleMap("World")
     }
   }
 
   const onCountryChange = (countryInput) => {
-    // hooks are syncronous and so the code actually runs the fetch before updating the state.
-    const countryCode = countryInput
-    if(countryInput)
-    if (countryCode !== 'Worldwide') {
-      setCountry(countryCode);
-      const url = `http://disease.sh/v3/covid-19/countries/${countryCode}`
-      getData(url)
-      setDataAge("All Time")
+    if (toggleMap === "World") {
+      // hooks are syncronous and so the code actually runs the fetch before updating the state.
+      const countryCode = countryInput
+      if (countryInput)
+        if (countryCode !== 'Worldwide') {
+          setCountry(countryCode);
+          const url = `http://disease.sh/v3/covid-19/countries/${countryCode}`
+          getData(url)
+          setDataAge("All Time")
+          // console.log(countryInfo.country[countryInput])
+          setCountryVaccineInfo(...Object.values(vaccineInfo.filter((element => element.country === countryInput))[0].timeline));
+        } else {
+          const url = 'http://disease.sh/v3/covid-19/all'
+          getDataAll(url)
+        }
     } else {
-      const url = 'http://disease.sh/v3/covid-19/all'
-      getDataAll(url)
+      setMapPosition(stateToCoordinates(countryInput))
+      setMapZoom(5)
+      setCountryVaccineInfo("N/A")
+      setCountryInfo(statesInfo.filter((element => element.country === countryInput))[0]);
+
     }
   }
 
@@ -204,7 +227,7 @@ export default function App() {
       .then(data => {
         setCountryInfo(data)
         setMapPosition([data.countryInfo.lat, data.countryInfo.long])
-        setMapZoom(4);
+        setMapZoom(5);
         setSavedCountryInfo(data)
       })
   }
@@ -237,44 +260,49 @@ export default function App() {
             <Map mapState={toggleMap} states={statesInfo} caseType={mapCaseType} countries={mapCountries} zoom={mapZoom} center={mapCenter} position={mapPosition} />
           </div>
           <div className="app__stats">
-          <Paper 
-           style={{
-            width: "150px",
-            height: "150px",
-            border: "1px solid grey",
-            backgroundColor: "smokewhite",
-            borderRadius: "20px",
-            position: "relative",
-            marginTop: 10,
-            font: "400 2em/90px 'Courier', sans-serif",
-            color: "#fbfbfb",
-            textAlign: "center",
-            cursor: "pointer",
-            }}className="chart">
-                <PieChart data={pieChartData} />
-              </Paper>
+            <Paper className="pieChart"
+              style={{
+                // width: "150px",
+                // height: "150px",
+                border: "1px solid grey",
+                backgroundColor: "lightblue",
+                borderRadius: "10px",
+                // position: "relative",
+                // marginTop: 10,
+                // font: "400 2em/90px 'Courier', sans-serif",
+                // color: "#fbfbfb",
+                borderAlign: "center",
+                textAlign: "center",
+                cursor: "pointer",
+              }}>
+              <PieChart data={pieChartData} />
+            </Paper>
 
             <Infobox
-              value="cases" onClick={onInfoBoxClick} title="Cases" total={countryInfo.cases} cases={countryInfo.todayCases} />
-            <Infobox
+              value="cases" onClick={onInfoBoxClick} title="Cases" total={countryInfo.cases} />
+            <Infobox1
               onClick={(e) => setMapCaseType("recovered")}
-              title="Recovered"
+              title="Vaccinations"
               // active={casesType === "recovered"}
               // cases={prettyPrintStat(countryInfo.todayRecovered)}
-              total={numeral(countryInfo.recovered).format("0.0a")}
+              total={numeral(countryVaccineInfo).format("0.0a")}
 
             />
             <Infobox
-              value="deaths" onClick={onInfoBoxClick} title="Deaths" total={countryInfo.deaths} cases={countryInfo.todayDeaths} />
+              value="deaths" onClick={onInfoBoxClick} title="Deaths" total={countryInfo.deaths} />
 
             <div className="app__stats_bottom">
 
             </div>
             <div>
-            <FormGroup>
-              <FormControlLabel control={<Switch  onChange={onDateAgeToggle} defaultChecked color="success" size="large"/>} label={dataAge} />
-            </FormGroup>
-            
+              <FormGroup>
+                <FormControlLabel control={<Switch onChange={onDateAgeToggle} defaultChecked color="success" size="large" />} label={dataAge} />
+              </FormGroup>
+              <div class="switch-button">
+                <input class="switch-button-checkbox" type="checkbox"></input>
+                <label class="switch-button-label" for=""><span class="switch-button-label-span">Photo</span></label>
+              </div>
+
             </div>
             {/* <Paper onClick={onDateAgeToggle} elevation={2}
 
@@ -318,7 +346,7 @@ export default function App() {
             </FormControl>
             <Button className="global" onClick={() => onCountryChange("Worldwide")}> <p>View Worldwide Data</p></Button>
             <FormGroup>
-              <FormControlLabel control={<Switch  onChange={onTableToggle} defaultChecked color="success" size="large"/>} label="US/World" />
+              <FormControlLabel control={<Switch onChange={onTableToggle} defaultChecked color="success" size="large" />} label="US/World" />
             </FormGroup>
           </div>
           {/* <p>{countryInfo.country}</p> */}

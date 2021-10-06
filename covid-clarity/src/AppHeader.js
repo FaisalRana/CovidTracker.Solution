@@ -30,7 +30,7 @@ export default function ButtonAppBar({currentCountry}) {
       <AppBar
         position="sticky"
         marginTop="30px"
-        style={{ borderRadius: "40px", backgroundColor: "slategrey", color: "white" }}
+        style={{ borderRadius: "40px", backgroundColor: "#ef8d65", color: "black" }}
       >
         <Toolbar>
             {/* <MenuIcon /> */}

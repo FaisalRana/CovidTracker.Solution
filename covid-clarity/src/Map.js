@@ -10,7 +10,6 @@ function Map({mapState, states, countries, center, zoom, caseType, position}) {
   const mapFunction = (mapState, states, countries) => {
     
     if(mapState === "World") {
-      console.log("World supposed", mapState)
       return showDataOnMap(countries, caseType)
       } else {
 

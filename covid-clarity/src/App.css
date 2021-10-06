@@ -62,7 +62,9 @@ width: 100%
 
 
 h2 {
-  color: black
+  color: black;
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+
 }
 
 h1 {
@@ -76,6 +78,10 @@ h1 {
 body {
   margin: 100;
   padding: 10px; 
-  background-color: #004882;
+  background-color: #0474BA;
 }
 
+.pieChart {
+  width: 200px;
+  height: 200px;
+}

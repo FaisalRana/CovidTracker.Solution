@@ -27,7 +27,7 @@ const casesTypeColors = {
 
 export const showDataOnMap =  (data, casesType) => {
 
-console.log(data)
+// console.log(data)
 
  return  data.map((country, i) => ( 
     <Circle

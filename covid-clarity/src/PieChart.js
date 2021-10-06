@@ -7,9 +7,9 @@ export default class PieChart extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className="pieChart">
                 <Pie
-                    style={{width: "50", height: "50%"}}
+                    style={{width: "70", height: "50",color: "black", hoverBorderColor: "blue"}}
                     data={this.props.data}
                     options={{
                         title: {
