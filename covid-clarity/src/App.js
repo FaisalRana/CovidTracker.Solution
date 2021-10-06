@@ -8,7 +8,10 @@ import {
   Card,
   CardContent,
   Button,
-  Paper
+  Paper,
+  FormGroup,
+  Switch,
+  FormControlLabel,
 } from "@material-ui/core";
 import Infobox from './Infobox';
 import Map from './Map';
@@ -20,10 +23,14 @@ import { useMap } from 'react-leaflet';
 import numeral from 'numeral';
 import { orange } from '@material-ui/core/colors';
 // import UnitedStates from './UnitedStates';
-
+import AppHeader from './AppHeader'
+import {getCoordinates, stateToCoordinates}  from './coordinates'
+import PieChart from './PieChart';
 // http://disease.sh/v3/covid-19/countries
 // http://disease.sh/v3/covid-19/countries/[country code]
 // http://disease.sh/v3/covid-19/all //worldwide 
+
+
 export function ChangeMapView({ coords, zoom }) {
   const map = useMap();
   map.setView(coords, zoom);
@@ -45,11 +52,34 @@ export default function App() {
   const [savedCountryInfo, setSavedCountryInfo] = useState([])
   const [dataAge, setDataAge] = useState('Total')
   const [mapCaseType, setMapCaseType] = useState('cases')
-  const [mapCounties, setMapCounties] = useState([])
+  const [statesInfo, setStatesInfo] = useState([])
+  const [countriesData, setCountriesData] = useState([])
+  const [toggleMap, setToggleMap] = useState("World")
 
-
-
-  // const [url, setUrl] = useState('')
+  const pieChartData = {
+    labels: ['Cases', 'Population'],
+    datasets: [
+      {
+        label: 'Rainfall',
+        backgroundColor: [
+          '#B21F00',
+          '#C9DE00',
+          '#2FDE00',
+          '#00A6B4',
+          '#6800B4'
+        ],
+        hoverBackgroundColor: [
+          '#501800',
+          '#4B5000',
+          '#175000',
+          '#003350',
+          '#35014F'
+        ],
+        data: [countryInfo.cases, countryInfo.population]
+      }
+    ]
+  }
+  // worldwide cases 
 
   useEffect(() => {
     fetch('http://disease.sh/v3/covid-19/all')
@@ -57,11 +87,12 @@ export default function App() {
       .then(data => {
         setCountryInfo(data)
         setWorldwideInfo(data)
+        console.log(stateToCoordinates("Washington"))
       })
   }, [])
 
 
-
+// worlwide by countries with coordinates
   useEffect(() => {
     // async code will run only the first time the page renders.. and again anytime the variable in the second parameter changes. 
     const getCountriesData = async () => {
@@ -75,6 +106,7 @@ export default function App() {
             }))
 
           const sortedData = sortHelper(data)
+          setCountriesData(sortedData)
           setTableData(sortedData);
           setCountries(countries)
           setMapCountries(data);
@@ -85,26 +117,36 @@ export default function App() {
     // console.log('URL---_____________________->')
   }, [])
 
+  //states data
   useEffect(() => {
     // async code will run only the first time the page renders.. and again anytime the variable in the second parameter changes. 
-    const getCountiesData = async () => {
-      await fetch('https://disease.sh/v3/covid-19/jhucsse/counties')
+    const getStatesData = async () => {
+      await fetch('https://disease.sh/v3/covid-19/states')
         .then(response => response.json())
         .then(data => {
-
-          setMapCounties(data);
+          const statesFormatted = data.map(state => (
+            {
+              country: state.state,
+              cases: state.cases,
+              coordinates: stateToCoordinates(state.state),
+              deaths: state.deaths,
+              population: state.population
+            }))
+          const newState = statesFormatted.filter(element => element.coordinates !== undefined)
+          setStatesInfo(newState);
+          console.log(newState)
         })
+        
     }
-    getCountiesData();
-    // console.log('URL---_____________________->')
+    getStatesData();
   }, [])
 
+  // useEffect(() => {}, toggleMap)
 
-  
-const onInfoBoxClick = (event) => {
-  setMapCaseType(event.target.value)
+  const onInfoBoxClick = (event) => {
+    setMapCaseType(event.target.value)
 
-}
+  }
 
   const onReverseButtonClick = (event) => {
     // setSelect(event.target.value)
@@ -112,8 +154,8 @@ const onInfoBoxClick = (event) => {
     setTableData(sortedData);
   }
 
-  const onRecentButtonClick = () => {
-    if (dataAge === 'Total') {;
+  const onDateAgeToggle = () => {
+    if (dataAge === 'Total') {
       setDataAge("Recent")
       setCountryInfo(prevState => {
         prevState.cases = countryInfo.todayCases
@@ -121,6 +163,7 @@ const onInfoBoxClick = (event) => {
         prevState.deaths = countryInfo.todayDeaths
         return { ...prevState };
       })
+      
     } else {
       onCountryChange(country)
       setDataAge("Total")
@@ -128,15 +171,24 @@ const onInfoBoxClick = (event) => {
   }
 
 
+  const onTableToggle = () => {
+    if(tableData !== statesInfo) {
+    setTableData(statesInfo)
+    setToggleMap("US")
+    console.log(toggleMap)
+    }
+    else { setTableData(countriesData)
+    setToggleMap("World")
+    console.log(toggleMap)
+    }
+  }
 
-
-  const onCountryChange =  (countryInput) => {
+  const onCountryChange = (countryInput) => {
     // hooks are syncronous and so the code actually runs the fetch before updating the state.
     const countryCode = countryInput
-    // setUrl(`http://disease.sh/v3/covid-19/countries/${countryCode}`);
+    if(countryInput)
     if (countryCode !== 'Worldwide') {
       setCountry(countryCode);
-      // console.log(country);
       const url = `http://disease.sh/v3/covid-19/countries/${countryCode}`
       getData(url)
       setDataAge("All Time")
@@ -144,17 +196,12 @@ const onInfoBoxClick = (event) => {
       const url = 'http://disease.sh/v3/covid-19/all'
       getDataAll(url)
     }
-
-
-    // console.log('URL---->', url)
   }
 
   const getData = async (url) => {
     await fetch(url)
       .then(response => response.json())
       .then(data => {
-        // console.log(countryInfo)
-        // console.log(data)
         setCountryInfo(data)
         setMapPosition([data.countryInfo.lat, data.countryInfo.long])
         setMapZoom(4);
@@ -165,12 +212,11 @@ const onInfoBoxClick = (event) => {
     await fetch(url)
       .then(response => response.json())
       .then(data => {
-        // console.log(countryInfo)
-        // console.log(data)
         setCountryInfo(data)
         setMapPosition({ lat: 45, lng: 10 })
         setMapZoom(2);
         setSavedCountryInfo(data)
+        console.log(data)
       })
   }
 
@@ -179,64 +225,85 @@ const onInfoBoxClick = (event) => {
   return (
 
     <div class="lines">
-      <div class="line"></div>
-      <div class="line"></div>
-      <div class="line"></div>
+
       <div className="app">
 
         <div className="app__left">
           <div className="app__header">
-            <h1>Covid-19 Clarity Project</h1>
-            <h3> {country}</h3>
-
+            <AppHeader currentCountry={country} />
           </div>
 
           <div className="app__map">
-            <Map caseType={mapCaseType} counties={mapCounties} zoom={mapZoom} center={mapCenter} position={mapPosition} />
+            <Map mapState={toggleMap} states={statesInfo} caseType={mapCaseType} countries={mapCountries} zoom={mapZoom} center={mapCenter} position={mapPosition} />
           </div>
           <div className="app__stats">
+          <Paper 
+           style={{
+            width: "150px",
+            height: "150px",
+            border: "1px solid grey",
+            backgroundColor: "smokewhite",
+            borderRadius: "20px",
+            position: "relative",
+            marginTop: 10,
+            font: "400 2em/90px 'Courier', sans-serif",
+            color: "#fbfbfb",
+            textAlign: "center",
+            cursor: "pointer",
+            }}className="chart">
+                <PieChart data={pieChartData} />
+              </Paper>
 
             <Infobox
-              value = "cases" onClick={onInfoBoxClick} title="Cases" total={countryInfo.cases} cases={countryInfo.todayCases} />
+              value="cases" onClick={onInfoBoxClick} title="Cases" total={countryInfo.cases} cases={countryInfo.todayCases} />
             <Infobox
-            onClick={(e) => setMapCaseType("recovered")}
-            title="Recovered"
-            // active={casesType === "recovered"}
-            // cases={prettyPrintStat(countryInfo.todayRecovered)}
-            total={numeral(countryInfo.recovered).format("0.0a")}
-                  
+              onClick={(e) => setMapCaseType("recovered")}
+              title="Recovered"
+              // active={casesType === "recovered"}
+              // cases={prettyPrintStat(countryInfo.todayRecovered)}
+              total={numeral(countryInfo.recovered).format("0.0a")}
+
             />
             <Infobox
-              value = "deaths" onClick={onInfoBoxClick} title="Deaths" total={countryInfo.deaths} cases={countryInfo.todayDeaths} />
-            <Paper onClick={onRecentButtonClick} elevation={2}
+              value="deaths" onClick={onInfoBoxClick} title="Deaths" total={countryInfo.deaths} cases={countryInfo.todayDeaths} />
+
+            <div className="app__stats_bottom">
+
+            </div>
+            <div>
+            <FormGroup>
+              <FormControlLabel control={<Switch  onChange={onDateAgeToggle} defaultChecked color="success" size="large"/>} label={dataAge} />
+            </FormGroup>
+            
+            </div>
+            {/* <Paper onClick={onDateAgeToggle} elevation={2}
+
               style={{
                 width: "150px",
                 height: "100px",
                 border: "1px solid grey",
-                backgroundColor: "slategrey",
+                backgroundColor: "orange",
                 borderRadius: "20px",
                 position: "relative",
                 marginTop: 10,
                 font: "400 2em/90px 'Courier', sans-serif",
                 color: "#fbfbfb",
                 textAlign: "center",
+                cursor: "pointer",
                 // verticalAlign: "center",
               }}>
               <h4>{dataAge}</h4>
-            </Paper>
+            </Paper> */}
           </div>
-          
+
           {/* <UnitedStates/> */}
 
           {/* Map */}
         </div>
-        <Card className="app__right">
-
-          <CardContent>
-            <div className="app__stats__top">
-              <br></br>            
-              <Button className="global" onClick={() => onCountryChange("Worldwide")}> <p>Reset Map</p></Button>
-              <Table onCountryChange={onCountryChange} allCountryInfo={countryInfo} countries={tableData} />
+        <Paper style={{ backgroundColor: "smokeWhite", height: "36em" }} className="app__right">
+          <div className="app__stats__top">
+            <br></br>
+            <Table onCountryChange={onCountryChange} allCountryInfo={countryInfo} countries={tableData} />
 
             <FormControl className="app__dropdown">
               <Select
@@ -249,21 +316,16 @@ const onInfoBoxClick = (event) => {
                 <MenuItem value='casesDescending'>Cases [lowest to highest]</MenuItem>
               </Select>
             </FormControl>
+            <Button className="global" onClick={() => onCountryChange("Worldwide")}> <p>View Worldwide Data</p></Button>
+            <FormGroup>
+              <FormControlLabel control={<Switch  onChange={onTableToggle} defaultChecked color="success" size="large"/>} label="US/World" />
+            </FormGroup>
+          </div>
+          {/* <p>{countryInfo.country}</p> */}
+          {/* <p>{countryInfo.cases}</p> */}
+          {/* <p>{countryInfo.deaths}</p> */}
 
-            </div>
-            {/* <p>{countryInfo.country}</p> */}
-            {/* <p>{countryInfo.cases}</p> */}
-            {/* <p>{countryInfo.deaths}</p> */}
-            <div className="app__stats_bottom">
-              <Card className="chart">
-                <CardContent>
-         
-                  {/* <LineGraph /> */}
-                </CardContent>
-              </Card>
-            </div>
-          </CardContent>
-        </Card>
+        </Paper>
 
       </div>
 

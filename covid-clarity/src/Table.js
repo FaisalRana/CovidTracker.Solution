@@ -1,5 +1,4 @@
 import React from 'react'
-import { sortHelper } from './helper.js'
 import numeral from 'numeral'
 
 function Table({ countries, onCountryChange, allCountryInfo}) {
@@ -26,6 +25,8 @@ function Table({ countries, onCountryChange, allCountryInfo}) {
 
   )
 }
+
+
 
 // export const reverseOrder = (data) => {
 //   const dataToSort = [...data]

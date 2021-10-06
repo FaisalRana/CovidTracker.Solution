@@ -1,5 +1,6 @@
 * {
   margin: 5px;
+
 }
 
 
@@ -15,39 +16,31 @@
   /* flex-wrap: wrap; */
 } 
 .app__left {
-  flex: .9;
-  /* min-width: 70%;
-  max-width: 5%; */
+  flex: .8;
+  min-width: 70%;
+  max-width: 5%;
   justify-content: space-evenly;
 }
 .app__right {
-/* flex-direction:column; */
-
+width: 100%
 }
-.MuiPaper-root MuiCard-root infoBox MuiPaper-elevation1 MuiPaper-rounded {
+.MuiCard-root {
   border-radius: 20px;
   color:red;
-  background-color:teal
+  border: solid black 2px;
 }
-.app__stats__top {
-  display: flex;
-  flex-direction: column;
-  flex: .25;
-  
-
-  }
-
+/* class="MuiPaper-root MuiCard-root app__right MuiPaper-elevation1 MuiPaper-rounded" */
 .app__stats {
-  /* justify-content:space-between; */
+  /* justify-content:space-evenly; */
   display:flex;
   height: 15%;
   min-width: 20px;
   font-size: 2vmin;
   padding: auto;
-  background-color: black
-  border-readius px;
+  border-radius: 20px;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  /* justify-content: space-evenly; */
+  
 
 }
 
@@ -67,20 +60,6 @@
   border: orange solid
 } */
 
-.MuiPaper-root.MuiCard-root.app__right.MuiPaper-elevation1.MuiPaper-rounded 
-{
-  background-color: white;
-  color: rgb(36, 31, 31);
-
-}
-body {
-  padding: 0;
-  margin: 0;
-  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif, 'Poppins', sans-serif;
-  background: rgb(252, 252, 252);
-  height: 100vh;
-  width: 100vw;
-}
 
 h2 {
   color: black
@@ -92,16 +71,11 @@ h1 {
   font-size: 40pt;
 }
 
-.container {
-  display:flex;
-  flex-wrap:wrap
+
+
+body {
+  margin: 100;
+  padding: 10px; 
+  background-color: #004882;
 }
-.cases
-.recovered
-.deaths {
-  margin: 100px;
-  border: solid red;
-}
-.infoContainer {
-  margin-top: 4px;
-}
+

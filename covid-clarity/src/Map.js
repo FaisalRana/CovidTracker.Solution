@@ -5,17 +5,28 @@ import "./Map.css"
 import { showDataOnMap, showUSDataOnMap } from './mapHelper'
 
 
-function Map({counties, center, zoom, caseType}) {
-  const position = [51.505, -0.09];
+function Map({mapState, states, countries, center, zoom, caseType, position}) {
+  // const position = [51.505, -0.09];
+  const mapFunction = (mapState, states, countries) => {
+    
+    if(mapState === "World") {
+      console.log("World supposed", mapState)
+      return showDataOnMap(countries, caseType)
+      } else {
+
+        return showUSDataOnMap(states, caseType)
+      }
+  }
+  
   return (
     <div className="map">
-      <MapContainer center= {position} zoom={zoom}>
+      <MapContainer center= {center} zoom={zoom}>
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
-        <ChangeMapView coords={position} zoom={zoom} />
-        {showDataOnMap(counties, caseType)}
+          <ChangeMapView coords={position} zoom={zoom} />
+        {mapFunction(mapState, states, countries)}
       </MapContainer>
     </div>
   );
