@@ -10,7 +10,7 @@ export function Infobox1({ title, cases, total }) {
     <Card style={{
       backgroundColor: "lightgreen",
       borderRadius: "20px",
-      width: "180px",
+      width: "200px",
       height: "100px",
       border: "1px solid grey",
       // backgroundColor: "smokewhite",

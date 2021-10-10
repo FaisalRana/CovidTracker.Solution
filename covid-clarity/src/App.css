@@ -41,7 +41,7 @@ border: silver solid 2px;
   font-size: 2vmin;
   padding: auto;
   border-radius: 20px;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
   justify-content: space-evenly;
 }
 

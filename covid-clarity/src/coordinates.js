@@ -52,6 +52,7 @@ const StatesCoordinates = {
   "West Virginia":	[38.597626,	-80.454903],
   "Wyoming":	[43.075968,	-107.290284]
   }
+
   
 export const stateToCoordinates = (state) =>  StatesCoordinates[state]
 export const getCoordinates = () => StatesCoordinates

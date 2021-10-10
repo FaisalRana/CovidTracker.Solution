@@ -27,6 +27,7 @@ import { orange } from '@material-ui/core/colors';
 import AppHeader from './AppHeader'
 import { getCoordinates, stateToCoordinates } from './coordinates'
 import PieChart from './PieChart';
+import $ from "jquery"
 // http://disease.sh/v3/covid-19/countries
 // http://disease.sh/v3/covid-19/countries/[country code]
 // http://disease.sh/v3/covid-19/all //worldwide 
@@ -56,7 +57,11 @@ export default function App() {
   const [statesInfo, setStatesInfo] = useState([])
   const [countriesData, setCountriesData] = useState([])
   const [toggleMap, setToggleMap] = useState("World")
-  const [countryVaccineInfo, setCountryVaccineInfo] = useState(22930000)
+  const [displayVaccineInfo, setdisplayVaccineInfo] = useState(22930000)
+  const [statesVaccineInfo, setStatesVaccineInfo] = useState(22930000)
+  const [show, toggleShow] = useState(true);
+
+  
 
 
   const pieChartData = {
@@ -122,7 +127,7 @@ export default function App() {
           const sortedData = sortHelper(data)
           setCountriesData(sortedData)
           setTableData(sortedData);
-          setCountries(countries)
+          // setCountries(countries)
           setMapCountries(data);
           // console.log(data);
         })
@@ -144,13 +149,26 @@ export default function App() {
               cases: state.cases,
               coordinates: stateToCoordinates(state.state),
               deaths: state.deaths,
-              population: state.population
+              population: state.population,
+              todayCases: state.todayCases,
+              todayDeaths: state.todayDeaths
             }))
-          const newState = statesFormatted.filter(element => element.coordinates !== undefined)
-          setStatesInfo(newState);
+            const newState = statesFormatted.filter(element => element.coordinates !== undefined)
+            setStatesInfo(newState);
+            console.log("NewState", newState)
+          },
+        await fetch('https://disease.sh/v3/covid-19/vaccine/coverage/states?lastdays=1&fullData=false')
+          .then(response => response.json())
+          .then(data => {
+              const statesVaccineData = data.map(state => (
+                {
+                  country: state.state,
+                  vaccines: parseInt(Object.values(state.timeline))
+                }))
+          console.log("States Vaccine", statesVaccineData)
+          setStatesVaccineInfo(statesVaccineData)
           // console.log(newState)
-        })
-
+        }))
     }
     getStatesData();
   }, [])
@@ -169,11 +187,12 @@ export default function App() {
   }
 
   const onDateAgeToggle = () => {
+    if (toggleMap === "World") {
     if (dataAge === 'Total') {
       setDataAge("Last 24h")
       setCountryInfo(prevState => {
         prevState.cases = countryInfo.todayCases
-        prevState.recovered = countryVaccineInfo
+        prevState.recovered = displayVaccineInfo
         prevState.deaths = countryInfo.todayDeaths
         return { ...prevState };
       })
@@ -182,17 +201,42 @@ export default function App() {
       onCountryChange(country)
       setDataAge("Total")
     }
+  } else if (toggleMap === "US") {
+    if (dataAge === 'Total') {
+    setCountryInfo(prevState => {
+      prevState.cases = mapCountries.filter(country => country.country === "USA")[0].todayCases
+      // prevState.recovered = displayVaccineInfo
+      prevState.deaths = mapCountries.filter(country => country.country === "USA")[0].todayDeaths
+      setDataAge("Last 24h")
+      return { ...prevState }
+    })
+  }  
+  } else if  (toggleMap === "US") {
+    console.log("ToggleMap: US, DataAge: 24", savedCountryInfo)
+    setDataAge("Total")
+    $('.dataAgeSwitch').hide();
+    setCountryInfo(prevState => {
+      prevState.cases = mapCountries.filter(country => country.country === "USA")[0].todayCases
+      // prevState.recovered = displayVaccineInfo
+      prevState.deaths = mapCountries.filter(country => country.country === "USA")[0].todayDeaths
+      setDataAge("Last 24h")
+      return { ...prevState };
+    })
+    setCountryInfo(country)
   }
-
+  }
 
   const onTableToggle = () => {
     if (tableData !== statesInfo) {
       setTableData(statesInfo)
       setToggleMap("US")
+      toggleShow(!show)
+      // getData(`http://disease.sh/v3/covid-19/countries/USA`)
     }
     else {
       setTableData(countriesData)
       setToggleMap("World")
+      toggleShow(!show)
     }
   }
 
@@ -206,8 +250,8 @@ export default function App() {
           const url = `http://disease.sh/v3/covid-19/countries/${countryCode}`
           getData(url)
           setDataAge("All Time")
-          // console.log(countryInfo.country[countryInput])
-          setCountryVaccineInfo(...Object.values(vaccineInfo.filter((element => element.country === countryInput))[0].timeline));
+          if(countryCode !== "Burundi")
+          setdisplayVaccineInfo(...Object.values(vaccineInfo.filter((element => element.country === countryInput))[0].timeline));
         } else {
           const url = 'http://disease.sh/v3/covid-19/all'
           getDataAll(url)
@@ -215,9 +259,10 @@ export default function App() {
     } else {
       setMapPosition(stateToCoordinates(countryInput))
       setMapZoom(5)
-      setCountryVaccineInfo("N/A")
-      setCountryInfo(statesInfo.filter((element => element.country === countryInput))[0]);
+      setCountryInfo(statesInfo.filter((element => element.country === countryInput))[0])
 
+      if(countryInput !== "New York")
+      setdisplayVaccineInfo(statesVaccineInfo.filter((element => element.country === countryInput))[0].vaccines)
     }
   }
 
@@ -239,7 +284,6 @@ export default function App() {
         setMapPosition({ lat: 45, lng: 10 })
         setMapZoom(2);
         setSavedCountryInfo(data)
-        console.log(data)
       })
   }
 
@@ -280,17 +324,16 @@ export default function App() {
 
             <Infobox
               value="cases" onClick={onInfoBoxClick} title="Cases" total={countryInfo.cases} />
-            <Infobox1
-              onClick={(e) => setMapCaseType("recovered")}
-              title="Vaccinations"
-              // active={casesType === "recovered"}
-              // cases={prettyPrintStat(countryInfo.todayRecovered)}
-              total={numeral(countryVaccineInfo).format("0.0a")}
-
-            />
             <Infobox
               value="deaths" onClick={onInfoBoxClick} title="Deaths" total={countryInfo.deaths} />
+            <Infobox1
+              onClick={(e) => setMapCaseType("recovered")}
+              title="Vaccinations (1x)"
+              // active={casesType === "recovered"}
+              // cases={prettyPrintStat(countryInfo.todayRecovered)}
+              total={numeral(displayVaccineInfo).format("0.0a")}
 
+            />
             <div className="app__stats_bottom">
 
             </div>
@@ -336,7 +379,7 @@ export default function App() {
             <Button className="global" onClick={() => onCountryChange("Worldwide")}> <p>View Worldwide Data</p></Button>
             <FormGroup className="switch">
               <FormControlLabel control={<Switch onChange={onTableToggle}  color="success" size="large" />} label="US/World" />
-              <FormControlLabel control={<Switch onChange={onDateAgeToggle}  color="success" size="large" />} label={dataAge} />
+              {show && <FormControlLabel  className="dataAgeSwitch" control={<Switch onChange={onDateAgeToggle}  color="success" size="large" />} label={dataAge} />}
             </FormGroup>
           </div>
           {/* <p>{countryInfo.country}</p> */}
