@@ -5,8 +5,6 @@ import {
   MenuItem,
   FormControl,
   Select,
-  Card,
-  CardContent,
   Button,
   Paper,
   FormGroup,
@@ -22,7 +20,6 @@ import LineGraph from './LineGraph';
 import "leaflet/dist/leaflet.css"
 import { useMap } from 'react-leaflet';
 import numeral from 'numeral';
-import { orange } from '@material-ui/core/colors';
 // import UnitedStates from './UnitedStates';
 import AppHeader from './AppHeader'
 import { getCoordinates, stateToCoordinates } from './coordinates'
@@ -231,12 +228,16 @@ export default function App() {
       setTableData(statesInfo)
       setToggleMap("US")
       toggleShow(!show)
+      setMapPosition([37, -95])
+      setMapZoom(4);
       // getData(`http://disease.sh/v3/covid-19/countries/USA`)
     }
     else {
       setTableData(countriesData)
       setToggleMap("World")
       toggleShow(!show)
+      setMapPosition([37, 10])
+      setMapZoom(2);
     }
   }
 
@@ -304,7 +305,7 @@ export default function App() {
             <Map mapState={toggleMap} states={statesInfo} caseType={mapCaseType} countries={mapCountries} zoom={mapZoom} center={mapCenter} position={mapPosition} />
           </div>
           <div className="app__stats">
-            <Paper className="pieChart"
+            {/* <Paper className="pieChart"
               style={{
                 // width: "150px",
                 // height: "150px",
@@ -319,8 +320,8 @@ export default function App() {
                 textAlign: "center",
                 cursor: "pointer",
               }}>
-              <PieChart data={pieChartData} />
-            </Paper>
+              {/* <PieChart data={pieChartData} /> */}
+            {/* </Paper> */}
 
             <Infobox
               value="cases" onClick={onInfoBoxClick} title="Cases" total={countryInfo.cases} />
@@ -337,8 +338,8 @@ export default function App() {
             <div className="app__stats_bottom">
 
             </div>
-
-            {/* <Paper onClick={onDateAgeToggle} elevation={2}
+{/* 
+            <Paper onClick={onDateAgeToggle} elevation={2}
 
               style={{
                 width: "150px",
