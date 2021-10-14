@@ -1,28 +1,10 @@
-# CovidTracker.Solution
+<p align="center"> 
+  <img src="./src/img/pepsiSpaceReadme.jpg" alt="pic of bitcoins.jpeg" width="240px" height="px">
+</p>
+<h1 align="center"> Covid-19 Clarity Project </h1>
+<h3 align="center"> Epicodus - Capstone </h3>
 
-<h1 align="center"> United States Covid-19 Tracker </h1>
-<h3 align="center"> Epicodus - January PT Cohort </h3>
-
-<p>This webapp uses React, React-leaflet, API calls and NOSQL to generate a choropleth map of various covid related information</p>
-
-### Research & Planning Log
-#### Saturday, 09/11
-* 4:20: researched various mapping tools including mapbox and leaflet
-* 6:40: researched various API's that contain covid data
-* 8:30: researched methods to have multiple variables in a react-leaflet app
-* 9:00: worked on component diagram 
-#### Sunday, 09/19
-* 4:21 watched video serries with inttro to mapbox. Coded along.
-* 7:21 completed mapbox project and used postman to start searching for API's
-
-#### Wednesday, 09/23
-* 9:21am started learning more about leaflet and watched a video tutorial of react-leaflet
-* 2:00 completed video serties and worked on comparing react-leaflet and js leaflet
-
-#### Saturday, 09/26
-* 11:00 completed component diagram
-* 1:00pm Read tutorial on how to use a select box and explored ideas on what variables to use
-* 2:02 Discussed with dev team members the significance of using react and considered the pros and cons of using a database in my project.  Also worked on using thunk. 
+<p>This ReactJS application that was designed to track covid cases and vaccinations worldwide and by US state.  It utalizes react-leaflet and diseases.sh api to generate a bivariate choropleth map that visualizes information related to Covid 19. 
 
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
@@ -35,16 +17,15 @@
 * WebPack
 * CSS
 * HTML
+* Gh-Pages
 * React-Leaflet
-* React-App
-
+* Numeral
+* Diseases.sh API
 
 
 ![-----------------------------------------------------](https://raw.githubusercontent.com/andreasbm/readme/master/assets/lines/rainbow.png)
 
-## Component Diagram
 
-![Image of component tree](./src/img/Component-Diagram.png)
 
 ## Known Bugs
 
@@ -60,8 +41,8 @@
 * _Requires Terminal Installation_
 * _Open the terminal on your local machine_
 * _Navigate to the directory inside of which you wish to house this project_
-* _Clone this project with the following command  `$ git clone https://github.com/FaisalRana/ReactJsTheBubbleRoom.git`_
-* _Navigate to the root directory by entering `$ cd thebubbleroom`_
+* _Clone this project with the following command  `$ git clone https://github.com/FaisalRana/CovidTracker.git`_
+* _Navigate to the root directory by entering `$ cd covidclarity`_
 * _Open this project in Visual Studio Code with the command `$ code .`_
 * _Retrieve and install packages needed to run this application with `$ npm install`_
 * _Run the application in development mode with `$ npm run start`_
