@@ -87,7 +87,7 @@ export default function App() {
   // worldwide cases 
 
   useEffect(() => {
-    fetch('http://disease.sh/v3/covid-19/all')
+    fetch('https://disease.sh/v3/covid-19/all')
       .then(response => response.json())
       .then(data => {
         setCountryInfo(data)
@@ -112,7 +112,7 @@ export default function App() {
   useEffect(() => {
     // async code will run only the first time the page renders.. and again anytime the variable in the second parameter changes. 
     const getCountriesData = async () => {
-      await fetch('http://disease.sh/v3/covid-19/countries')
+      await fetch('https://disease.sh/v3/covid-19/countries')
         .then(response => response.json())
         .then(data => {
           const countries = data.map(country => (
@@ -248,13 +248,13 @@ export default function App() {
       if (countryInput)
         if (countryCode !== 'Worldwide') {
           setCountry(countryCode);
-          const url = `http://disease.sh/v3/covid-19/countries/${countryCode}`
+          const url = `https://disease.sh/v3/covid-19/countries/${countryCode}`
           getData(url)
           setDataAge("All Time")
           if(countryCode !== "Burundi")
           setdisplayVaccineInfo(...Object.values(vaccineInfo.filter((element => element.country === countryInput))[0].timeline));
         } else {
-          const url = 'http://disease.sh/v3/covid-19/all'
+          const url = 'https://disease.sh/v3/covid-19/all'
           getDataAll(url)
         }
     } else {
